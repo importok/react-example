@@ -11,12 +11,8 @@ function App() {
     },
     last_name: {
       label: 'Last Name',
-      validators: 'required|length:5',
+      validators: 'required',
       transformers: 'capitalize|trim'
-    },
-    company_name: {
-      label: 'Company Name',
-      transformers: 'trim'
     },
     email: {
       label: 'Email',
@@ -25,28 +21,28 @@ function App() {
     },
     phone: {
       label: 'Phone',
-      validators: 'phone',
-      transformers: 'replace:-|trim'
+      transformers: 'trim'
     },
     country: {
       label: 'Country',
-      validators: 'in:CY,GR,UK',
-      transformers: 'uppercase|trim',
+      transformers: 'trim|as:countries',
+      validators: 'in:countries',
+      provider: 'countries'
     },
   };
 
   const saveRecord = async function (record, meta) {
-    // Fake a network request and throw an error randomly
-    const random = Math.floor(Math.random() * 10);
-    const status = random === 5 ? 500 : 200;
-    const response = await fetch('https://httpstat.us/' + status);
-    if (!response?.ok) {
-      throw new Error(`Response status ${response.status}`);
+    // Simulate a network request for 100ms
+    await new Promise(resolve => setTimeout(resolve, 200));
+
+    if (record.rowIndex % 5 === 0) {
+      // Simulate a failure for every 5th record
+      record.markAsRejected();
     }
   };
 
   return (
-    <div className="App">
+    <div className="App" style={{margin: '2rem'}}>
       <ImportokWizard
         title="ImportOK Example for React"
         fields={fields}
